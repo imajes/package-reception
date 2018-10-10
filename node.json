@@ -51,7 +51,7 @@
         "type": "string",
         "default": ""
     },
-        
+
     {
         "title": "Pages",
         "name": "pages",
@@ -94,11 +94,12 @@
             "name": "layout",
             "type": "select",
             "options": [
+                ["center-overlay", "WMS Layout"],
                 ["fullscreen", "Fullscreen"],
                 ["text-left", "Text Left"],
                 ["text-right", "Text Right"]
             ],
-            "default": "fullscreen"
+            "default": "center-overlay"
         }, {
             "title": "Asset",
             "ui_width": 4,

@@ -21,7 +21,7 @@ const store = new Vuex.Store({
     create_page (state, index) {
       var new_page = {
         media: "empty.png",
-        layout: "fullscreen",
+        layout: "center-overlay",
         config: {},
         schedule: {
           hours: [],
