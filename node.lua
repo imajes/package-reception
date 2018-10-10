@@ -108,10 +108,10 @@ local function wrap(str, limit, indent, indent1)
     end)
     local splitted = {}
     for token in string.gmatch(wrapped, "[^\n]+") do
-        splitted[#splitted + 1] = token 
+        splitted[#splitted + 1] = token
     end
     return splitted
-end 
+end
 
 local function Pinner()
     local pinned = {}
@@ -491,11 +491,13 @@ local function Flat(config)
     -- config:
     --   color: "#rrggbb"
     --   fade_time: 0-1
+    --   opacity: 0-1
 
     local color = config.color:gsub("#","")
     local r, g, b = tonumber("0x"..color:sub(1,2))/255, tonumber("0x"..color:sub(3,4))/255, tonumber("0x"..color:sub(5,6))/255
 
-    local flat = resource.create_colored_texture(r, g, b, 1)
+    local opacity = config.opacity or 1
+    local flat = resource.create_colored_texture(r, g, b, opacity)
     local fade_time = config.fade_time or 0.5
 
     return function(starts, ends)
@@ -793,7 +795,7 @@ local function Scheduler(playlist_source, job_queue)
         local base = scheduled_until
 
         print("base unix time is", base)
-            
+
         for idx = 1, #playlist do
             local item = playlist[idx]
             local starts = base + item.offset
@@ -849,12 +851,28 @@ local function Playlist()
         end
     end
 
+    local function tile_fullbleed(s, e, now)
+        return 0, 0, WIDTH, HEIGHT
+    end
+
     local function tile_fullscreen(s, e, now)
         return 0, 0, WIDTH, HEIGHT-50
     end
 
+    local function tile_logo(s, e, now)
+        return WIDTH-350, 75, WIDTH-100, 203
+    end
+
+    local function tile_center_overlay(s, e, now)
+        return WIDTH/8, HEIGHT/4, (WIDTH/8)*7, (HEIGHT/6)*5
+    end
+
+    local function tile_center_inner(s, e, now)
+        return (WIDTH/8)+10, (HEIGHT/4)+10, ((WIDTH/8)*7)+10, ((HEIGHT/6)*5)+10
+    end
+
     local function tile_top(s, e, now)
-        return 0, 0, WIDTH, 100
+        return 0, 0, WIDTH/2, 100
     end
 
     local function tile_bottom(s, e, now)
@@ -894,17 +912,8 @@ local function Playlist()
         add{
             offset = offset,
             duration = duration,
-            fn = TileChild{
-                asset_name = 'scroller',
-                blend = 0,
-            },
-            coord = tile_bottom_scroller,
-        }
-        add{
-            offset = offset,
-            duration = duration,
             fn = TimeTile{
-                font = font_regl, 
+                font = font_regl,
                 r = 1, g = 1, b = 1,
             },
             coord = tile_bottom_clock,
@@ -939,7 +948,7 @@ local function Playlist()
         return duration
     end
 
-    local function page_fullscreen(page, duration) 
+    local function page_fullscreen(page, duration)
         duration = duration or get_duration(page)
         add{
             offset = offset,
@@ -951,14 +960,58 @@ local function Playlist()
         offset = offset + duration
     end
 
-    local function page_text_left(page, duration)
+    local function page_overlay(page, duration)
         duration = duration or get_duration(page)
+        add{
+            offset = offset,
+            duration = duration,
+            fn = image_or_video_player(page.media),
+            coord = tile_fullbleed,
+        }
+        add{
+            offset = offset,
+            duration = duration,
+            fn = Flat{
+                fade_time = 0,
+                color = '#000000',
+                opacity = 0.4,
+            },
+            coord = tile_center_overlay,
+        }
         add{
             offset = offset,
             duration = duration,
             fn = Image{
                 fade_time = 0,
-                asset_name = node_config.header.asset_name,
+                asset_name = 'WMS-logo1.png',
+                kenburns = false,
+            },
+            coord = tile_logo,
+        }
+        add{
+            offset = offset,
+            duration = duration,
+            fn = Markup{
+                text = page.config.text or "",
+                width = ((WIDTH/8)*6)-20,
+                height = ((HEIGHT/6)*4)-20,
+                color = page.config.foreground or "#ffffff",
+            },
+            coord = tile_center_inner,
+        }
+        -- add_info_bar(page, duration)
+        offset = offset + duration
+    end
+
+    local function page_text_left(page, duration)
+        duration = duration or get_duration(page)
+        add{
+            offset = offset,
+            duration = duration,
+            fn = Flat{
+                fade_time = 0,
+                color = '#FF0000',
+                opacity = 0.2,
             },
             coord = tile_top,
         }
@@ -1037,6 +1090,7 @@ local function Playlist()
         ["fullscreen"] = page_fullscreen;
         ["text-left"] = page_text_left;
         ["text-right"] = page_text_right;
+        ["center-overlay"] = page_overlay;
     }
 
     local function create_intermission(idx)
@@ -1060,7 +1114,7 @@ local function Playlist()
                 duration = duration,
                 fn = InteractionTitle{
                     text = title,
-                    font = font_regl, 
+                    font = font_regl,
                     bg = {r=0, g=0, b=0},
                     fg = {r=1, g=1, b=1},
                 },

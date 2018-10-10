@@ -1,7 +1,11 @@
 {
     "name": "Reception Screen",
-    "author": "Florian Wesch <fw@info-beamer.com>",
+    "author": "James Cox <james@imaj.es>",
     "desc": "Shows textual/image and video information for a reception-style information screen.",
-    "repository": "https://github.com/info-beamer/package-reception",
-    "version": "0.3"
+    "repository": "https://github.com/imajes/package-reception",
+    "version": "0.5",
+    "runtime": {
+        "antialias": true,
+        "transparent": true
+    }
 }
