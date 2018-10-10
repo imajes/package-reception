@@ -52,7 +52,7 @@ const store = new Vuex.Store({
     },
     set_schedule_hour(state, {index, hour, on}) {
       var hours = state.config.pages[index].schedule.hours;
-      while (hours.length < 24*7) 
+      while (hours.length < 24*7)
         hours.push(true);
       Vue.set(hours, hour, on);
     },
@@ -329,7 +329,7 @@ Vue.component('asset-browser', {
           var fb = b.filename.toLocaleLowerCase();
           return fa.localeCompare(fb)
         },
-        age: function(a, b) { 
+        age: function(a, b) {
           return a.uploaded - b.uploaded
         },
       }[this.sorted]);
@@ -352,7 +352,7 @@ Vue.component('asset-browser', {
       this.open = false;
     },
     onHighlight(asset_spec) {
-      this.highlight = this.$store.state.assets[asset_spec] || 
+      this.highlight = this.$store.state.assets[asset_spec] ||
                        this.$store.state.node_assets[asset_spec];
     }
   },
@@ -542,6 +542,9 @@ Vue.component('layout-select', {
   props: ['layout'],
   data: () => ({
     options: [{
+      value: "center-overlay",
+      text: "WMS Layout",
+    }, {
       value: "fullscreen",
       text: "Fullscreen",
     }, {
