@@ -208,6 +208,32 @@ Vue.component('page-fullscreen', {
   }
 })
 
+Vue.component('page-center-overlay', {
+  template: '#page-center-overlay',
+  props: ["page"],
+  methods: {
+    onAssetSelected(asset_spec) {
+      this.$emit('mediaUpdated', asset_spec);
+    },
+    onUpdateForeground(evt) {
+      this.$emit('configUpdated', 'foreground', evt.target.value);
+    },
+    onUpdateBackground(evt) {
+      this.$emit('configUpdated', 'background', evt.target.value);
+    },
+    onUpdateTitle(evt) {
+      this.$emit('configUpdated', 'title', evt.target.value);
+    },
+    onUpdateKenBurns(evt) {
+      this.$emit('configUpdated', 'kenburns', evt.target.checked);
+    },
+    onUpdateText(evt) {
+      this.$emit('configUpdated', 'text', evt.target.value);
+    },
+  }
+})
+
+
 Vue.component('page-text-right', {
   template: '#page-text-right',
   props: ["page"],

@@ -246,6 +246,13 @@
           <interaction-ui v-if="open" :interaction="page.interaction || {}" @onChange='onInteractionUpdate'>
           </interaction-ui>
 
+          <page-center-overlay
+            v-if="page.layout == 'center-overlay'"
+            :page="page"
+            @configUpdated='onConfigUpdate'
+            @mediaUpdated='onMediaUpdate'>
+          </page-center-overlay>
+
           <page-fullscreen
             v-if="page.layout == 'fullscreen'"
             :page="page"
@@ -514,6 +521,85 @@
             width=320
             height=310>
           </asset-view>
+        </div>
+      </div>
+    </script>
+
+    <script type="text/x-template" id="page-center-overlay">
+      <div class='row'>
+        <div class='col-xs-12'>
+          <h3>WMS Layout</h3>
+        </div>
+        <div class='col-xs-6'>
+          <asset-view
+            :asset_spec="page.media"
+            :shadow=true
+            width=320
+            height=310>
+          </asset-view>
+        </div>
+        <div class='col-xs-6'>
+          <div class='row'>
+            <div class='col-xs-6'>
+              <asset-browser 
+                :asset_spec="page.media"
+                valid="image,video"
+                title="Select Image/Video"
+                @assetSelected='onAssetSelected'>
+              </asset-browser>
+            </div>
+            <div class='col-xs-6'>
+              <div class="checkbox">
+                <label>
+                  <input
+                    disabled="disabled"
+                    type="checkbox"
+                    :checked="page.config.kenburns"
+                    @change="onUpdateKenBurns">
+                    Ken Burns
+                </label>
+              </div>
+            </div>
+          </div>
+          <br/>
+          <div class='row'>
+            <div class='col-xs-6'>
+              <label class='field-label'>Foreground</label>
+              <input
+                class="form-control"
+                type="color"
+                :value="page.config.foreground || '#FFFFFF'"
+                @change="onUpdateForeground">
+            </div>
+            <div class='col-xs-6'>
+              <label class='field-label'>Background</label>
+              <input
+                class="form-control"
+                type="color"
+                :value="page.config.background || '#000000'"
+                @change="onUpdateBackground">
+            </div>
+          </div>
+          <!--
+          <br/>
+          <input
+            class="form-control"
+            type='text'
+            placeholder="Page Title"
+            :value="page.config.title"
+            @change="onUpdateTitle">
+          -->
+          <br/>
+          <textarea
+            placeholder="Body Text"
+            class="form-control page-text"
+            :style="{
+              'background-color': page.config.background || '#000000',
+              'color': page.config.foreground || '#ffffff',
+            }"
+            @change="onUpdateText"
+            @keyup="onUpdateText"
+            @paste="onUpdateText">{{page.config.text}}</textarea>
         </div>
       </div>
     </script>
