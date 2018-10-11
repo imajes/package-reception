@@ -17,6 +17,7 @@ local node_config = {}
 local overlay_debug = false
 local font_regl = resource.load_font "default-font.ttf"
 local font_bold = resource.load_font "default-font-bold.ttf"
+local font_italic = resource.load_font "default-font-italic.ttf"
 
 local active_intermission_page_idx
 
@@ -648,6 +649,11 @@ local function Markup(config)
                     line = line:sub(2)
                     font = font_bold
                     size = H1_FONT_SIZE
+                    maxl = max_per_line(font, size, width)
+                elseif line:sub(1,1) == "__" then
+                    line = line:sub(2)
+                    font = font_italic
+                    size = DEFAULT_FONT_SIZE
                     maxl = max_per_line(font, size, width)
                 end
 
