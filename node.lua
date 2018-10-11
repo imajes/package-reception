@@ -974,7 +974,7 @@ local function Playlist()
             fn = Flat{
                 fade_time = 0,
                 color = '#000000',
-                opacity = 0.4,
+                opacity = 0.6,
             },
             coord = tile_center_overlay,
         }
