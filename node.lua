@@ -566,6 +566,7 @@ local function Markup(config)
     local LINE_HEIGHT = 1.05
 
     local DEFAULT_FONT_SIZE = 35
+    local ITALIC_NOTE_FONT_SIZE = 28
     local H1_FONT_SIZE = 70
     local H2_FONT_SIZE = 50
 
@@ -625,15 +626,27 @@ local function Markup(config)
             if line:find "|" then
                 -- table row
                 local cols = add_row()
+                local first_col = true
+
                 for field in line:gmatch("[^|]+") do
                     field = trim(field)
                     local width = font:width(field, size)
-                    cols[#cols+1] = {
-                        font = font,
-                        text = field,
-                        size = size,
-                        width = width,
-                    }
+                    if first_col then
+                        cols[#cols+1] = {
+                            font = font_bold,
+                            text = field,
+                            size = size,
+                            width = width,
+                        }
+                    else
+                        cols[#cols+1] = {
+                            font = font_regl,
+                            text = field,
+                            size = size,
+                            width = width,
+                        }
+                    end
+                    first_col = false
                 end
             else
                 -- plain text, wrapped
@@ -650,10 +663,10 @@ local function Markup(config)
                     font = font_bold
                     size = H1_FONT_SIZE
                     maxl = max_per_line(font, size, width)
-                elseif line:sub(1,1) == "__" then
-                    line = line:sub(2)
+                elseif line:sub(1,2) == "__" then
+                    line = line:sub(3)
                     font = font_italic
-                    size = DEFAULT_FONT_SIZE
+                    size = ITALIC_NOTE_FONT_SIZE
                     maxl = max_per_line(font, size, width)
                 end
 
@@ -979,8 +992,8 @@ local function Playlist()
             duration = duration,
             fn = Flat{
                 fade_time = 0,
-                color = '#000000',
-                opacity = 0.75,
+                color = page.config.background or '#000000',
+                opacity = 0.9,
             },
             coord = tile_center_overlay,
         }
