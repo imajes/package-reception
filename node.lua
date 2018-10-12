@@ -566,7 +566,7 @@ local function Markup(config)
     local LINE_HEIGHT = 1.05
 
     local DEFAULT_FONT_SIZE = 35
-    local ITALIC_NOTE_FONT_SIZE = 28
+    local NOTE_FONT_SIZE = 28
     local H1_FONT_SIZE = 70
     local H2_FONT_SIZE = 50
 
@@ -653,7 +653,12 @@ local function Markup(config)
                 flush_table()
 
                 -- markdown header # and ##
-                if line:sub(1,2) == "##" then
+                if line:sub(1,3) == "###" then
+                    line = line:sub(4)
+                    font = font_regl
+                    size = NOTE_FONT_SIZE
+                    maxl = max_per_line(font, size, width)
+                elseif line:sub(1,2) == "##" then
                     line = line:sub(3)
                     font = font_bold
                     size = H2_FONT_SIZE
@@ -666,7 +671,7 @@ local function Markup(config)
                 elseif line:sub(1,2) == "__" then
                     line = line:sub(3)
                     font = font_italic
-                    size = ITALIC_NOTE_FONT_SIZE
+                    size = NOTE_FONT_SIZE
                     maxl = max_per_line(font, size, width)
                 end
 
@@ -879,11 +884,15 @@ local function Playlist()
     end
 
     local function tile_logo(s, e, now)
-        return WIDTH-350, 75, WIDTH-100, 203
+        return WIDTH-350, 50, WIDTH-100, 178
     end
 
     local function tile_center_overlay(s, e, now)
-        return WIDTH/8, HEIGHT/4, (WIDTH/8)*7, (HEIGHT/6)*5
+        -- centered..
+        -- return WIDTH/8, HEIGHT/4, (WIDTH/8)*7, (HEIGHT/6)*5
+
+        -- lower box
+        return WIDTH/8, HEIGHT/4, (WIDTH/8)*7, HEIGHT
     end
 
     local function tile_center_inner(s, e, now)
