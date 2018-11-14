@@ -996,16 +996,18 @@ local function Playlist()
             fn = image_or_video_player(page.media),
             coord = tile_fullbleed,
         }
-        add{
-            offset = offset,
-            duration = duration,
-            fn = Flat{
-                fade_time = 0,
-                color = page.config.background or '#000000',
-                opacity = 0.75,
-            },
-            coord = tile_center_overlay,
-        }
+        if not page.config.background == "" then
+            add{
+                offset = offset,
+                duration = duration,
+                fn = Flat{
+                    fade_time = 0,
+                    color = page.config.background or '#000000',
+                    opacity = 0.75,
+                },
+                coord = tile_center_overlay,
+            }
+        end
         add{
             offset = offset,
             duration = duration,
