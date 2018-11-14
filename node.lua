@@ -982,9 +982,9 @@ local function Playlist()
             offset = offset,
             duration = duration,
             fn = image_or_video_player(page.media),
-            coord = tile_fullscreen,
+            coord = tile_fullbleed,
         }
-        add_info_bar(page, duration)
+        -- add_info_bar(page, duration)
         offset = offset + duration
     end
 
