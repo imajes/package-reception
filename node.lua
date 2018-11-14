@@ -996,7 +996,7 @@ local function Playlist()
             fn = image_or_video_player(page.media),
             coord = tile_fullbleed,
         }
-        if not page.config.background == "" then
+        if page.config.background ~= "" then
             add{
                 offset = offset,
                 duration = duration,
