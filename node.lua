@@ -436,6 +436,7 @@ local function Video(config)
     -- config:
     --   asset_name: 'foo.mp4'
     --   fit: aspect fit or scale?
+    --   looped: should be looped or not. :)
     --   fade_time: 0-1
     --   raw: use raw video?
     --   layer: video layer for raw videos
@@ -447,12 +448,15 @@ local function Video(config)
 
         local fade_time = config.fade_time or 0.5
 
+        local is_looped = config.looped or false
+
         local vid
         if config.raw then
             local raw = sys.get_ext "raw_video"
             vid = raw.load_video{
                 file = file,
                 paused = true,
+                looped = is_looped,
                 audio = node_config.audio,
             }
             vid:layer(-10)
@@ -467,6 +471,7 @@ local function Video(config)
             vid = resource.load_video{
                 file = file,
                 paused = true,
+                looped = is_looped,
                 audio = node_config.audio,
             }
 
@@ -952,6 +957,7 @@ local function Playlist()
         if media.type == "image" then
             return Image{
                 fade_time = 0,
+                fit = true,
                 asset_name = media.asset_name,
                 kenburns = kenburns,
             }
@@ -959,7 +965,8 @@ local function Playlist()
             return Video{
                 fade_time = 0,
                 asset_name = media.asset_name,
-                raw = true,
+                fit = true,
+                looped = true,
             }
         end
     end
