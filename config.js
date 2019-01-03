@@ -542,6 +542,28 @@ Vue.component('layout-select', {
   }
 })
 
+Vue.component('overlay-pos-select', {
+  template: '#overlay-pos-select',
+  props: ['overlay_position'],
+  data: () => ({
+    options: [{
+      value: "left",
+      text: "Left 50%",
+    }, {
+      value: "center",
+      text: "Centered",
+    }, {
+      value: "right",
+      text: "Right 50%",
+    }]
+  }),
+  methods: {
+    onSelect(evt) {
+      this.$emit('overlayPositionSelected', evt.target.value);
+    },
+  }
+})
+
 Vue.component('timezone-select', {
   template: '#timezone-select',
   props: ['timezone'],
