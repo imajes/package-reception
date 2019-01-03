@@ -1127,9 +1127,7 @@ local function Playlist()
 
     local layouts = {
         ["fullscreen"] = page_fullscreen;
-        ["text-left"] = page_text_left;
-        ["text-right"] = page_text_right;
-        ["center-overlay"] = page_overlay;
+        ["overlay"] = page_overlay;
     }
 
     local function create_intermission(idx)

@@ -525,17 +525,11 @@ Vue.component('layout-select', {
   props: ['layout'],
   data: () => ({
     options: [{
-      value: "center-overlay",
-      text: "WMS Layout",
+      value: "overlay",
+      text: "Text With Overlay",
     }, {
       value: "fullscreen",
-      text: "Fullscreen",
-    }, {
-      value: "text-left",
-      text: "Text on left side",
-    }, {
-      value: "text-right",
-      text: "Text on right side",
+      text: "Fullscreen Media",
     }]
   }),
   methods: {
