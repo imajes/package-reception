@@ -117,7 +117,7 @@
     <script type="text/x-template" id="config-ui">
       <div>
         <h4>Settings</h4>
-        <div class='row form-group'>
+        <div class='hidden row form-group'>
           <div class='col-xs-4'>
             <label class='field-label'>Timezone</label>
             <timezone-select
@@ -137,9 +137,6 @@
           </div>
         </div>
 
-        <hr/>
-
-        <h4>Decoration</h4>
         <div class='row'>
           <div class='col-xs-3'>
             <asset-browser 
@@ -159,7 +156,7 @@
           </div>
         </div>
         <br/>
-        <div class='row'>
+        <div class='row hidden'>
           <div class='col-xs-3'>
             <asset-browser 
               :asset_spec="config.footer"
@@ -180,11 +177,11 @@
 
         <hr/>
 
-        <h4>Pages you want to show</h4>
+        <h4>Slideshow</h4>
         <div class='row'>
           <div class='col-xs-12'>
             <button
-              class='btn btn-default'
+              class='btn btn-default btn-primary'
               @click="onAdd(-1)">
               Add
               <span class='glyphicon glyphicon-plus'></span>
@@ -229,10 +226,10 @@
             {{ page.duration }}
           </select>
           <button class='btn btn-default' v-if="open" @click="onToggleOpen">
-            Schedule / Interaction ▴
+            Schedule ▴
           </button>
           <button class='btn btn-default' v-else @click="onToggleOpen">
-            Schedule / Interaction ▾
+            Schedule ▾
           </button>
           <button class='btn btn-danger pull-right' @click="onRemove">
             Delete
@@ -246,12 +243,12 @@
           <interaction-ui v-if="open" :interaction="page.interaction || {}" @onChange='onInteractionUpdate'>
           </interaction-ui>
 
-          <page-center-overlay
-            v-if="page.layout == 'center-overlay'"
+          <page-overlay
+            v-if="page.layout == 'center-overlay' || page.layout == 'overlay'"
             :page="page"
             @configUpdated='onConfigUpdate'
             @mediaUpdated='onMediaUpdate'>
-          </page-center-overlay>
+          </page-overlay>
 
           <page-fullscreen
             v-if="page.layout == 'fullscreen'"
@@ -260,19 +257,6 @@
             @mediaUpdated='onMediaUpdate'>
           </page-fullscreen>
 
-          <page-text-left
-            v-if="page.layout == 'text-left'"
-            :page="page"
-            @configUpdated='onConfigUpdate'
-            @mediaUpdated='onMediaUpdate'>
-          </page-text-left>
-
-          <page-text-right
-            v-if="page.layout == 'text-right'"
-            :page="page"
-            @configUpdated='onConfigUpdate'
-            @mediaUpdated='onMediaUpdate'>
-          </page-text-right>
         </div>
       </div>
     </script>
@@ -348,12 +332,12 @@
     <script type="text/x-template" id="page-fullscreen">
       <div class='row'>
         <div class='col-xs-12'>
-          <h3>Fullscreen Image/Video view</h3>
+          <h3>Fullscreen Image/Video View</h3>
           <asset-browser 
             :asset_spec="page.media"
             valid="image,video"
             title="Select Fullscreen Asset"
-            help="For best presentation use an 1920x930 image"
+            help="For best presentation use a 1366x768 sized image"
             @assetSelected='onAssetSelected'>
           </asset-browser>
         </div>
@@ -369,167 +353,11 @@
       </div>
     </script>
 
-    <script type="text/x-template" id="page-text-right">
+    <script type="text/x-template" id="page-overlay">
       <div class='row'>
-        <div class='col-xs-12'>
-          <h3>Image/Video + Text</h3>
-        </div>
-        <div class='col-xs-6'>
-          <asset-view
-            :asset_spec="page.media"
-            :shadow=true
-            width=320
-            height=310>
-          </asset-view>
-        </div>
-        <div class='col-xs-6'>
-          <div class='row'>
-            <div class='col-xs-6'>
-              <asset-browser 
-                :asset_spec="page.media"
-                valid="image,video"
-                title="Select Image/Video"
-                @assetSelected='onAssetSelected'>
-              </asset-browser>
-            </div>
-            <div class='col-xs-6'>
-              <div class="checkbox">
-                <label>
-                  <input
-                    type="checkbox"
-                    :checked="page.config.kenburns"
-                    @change="onUpdateKenBurns">
-                    Ken Burns
-                </label>
-              </div>
-            </div>
-          </div>
-          <br/>
-          <div class='row'>
-            <div class='col-xs-6'>
-              <label class='field-label'>Foreground</label>
-              <input
-                class="form-control"
-                type="color"
-                :value="page.config.foreground || '#FFFFFF'"
-                @change="onUpdateForeground">
-            </div>
-            <div class='col-xs-6'>
-              <label class='field-label'>Background</label>
-              <input
-                class="form-control"
-                type="color"
-                :value="page.config.background || '#000000'"
-                @change="onUpdateBackground">
-            </div>
-          </div>
-          <!--
-          <br/>
-          <input
-            class="form-control"
-            type='text'
-            placeholder="Page Title"
-            :value="page.config.title"
-            @change="onUpdateTitle">
-          -->
-          <br/>
-          <textarea
-            placeholder="Side Text"
-            class="form-control page-text"
-            :style="{
-              'background-color': page.config.background || '#000000',
-              'color': page.config.foreground || '#ffffff',
-            }"
-            @change="onUpdateText"
-            @keyup="onUpdateText"
-            @paste="onUpdateText">{{page.config.text}}</textarea>
-        </div>
-      </div>
-    </script>
-
-    <script type="text/x-template" id="page-text-left">
-      <div class='row'>
-        <div class='col-xs-12'>
-          <h3>Image/Video + Text</h3>
-        </div>
-        <div class='col-xs-6'>
-          <div class='row'>
-            <div class='col-xs-6'>
-              <asset-browser 
-                :asset_spec="page.media"
-                valid="image,video"
-                title="Select Image/Video"
-                @assetSelected='onAssetSelected'>
-              </asset-browser>
-            </div>
-            <div class='col-xs-6'>
-              <div class="checkbox">
-                <label>
-                  <input
-                    type="checkbox"
-                    :checked="page.config.kenburns"
-                    @change="onUpdateKenBurns">
-                    Ken Burns
-                </label>
-              </div>
-            </div>
-          </div>
-          <br/>
-          <div class='row'>
-            <div class='col-xs-6'>
-              <label class='field-label'>Foreground</label>
-              <input
-                class="form-control"
-                type="color"
-                :value="page.config.foreground || '#FFFFFF'"
-                @change="onUpdateForeground">
-            </div>
-            <div class='col-xs-6'>
-              <label class='field-label'>Background</label>
-              <input
-                class="form-control"
-                type="color"
-                :value="page.config.background || '#000000'"
-                @change="onUpdateBackground">
-            </div>
-          </div>
-          <!--
-          <br/>
-          <input
-            class="form-control"
-            type='text'
-            placeholder="Page Title"
-            :value="page.config.title"
-            @change="onUpdateTitle">
-          -->
-          <br/>
-          <textarea
-            placeholder="Side Text"
-            class="form-control page-text"
-            :style="{
-              'background-color': page.config.background || '#000000',
-              'color': page.config.foreground || '#ffffff',
-            }"
-            @change="onUpdateText"
-            @keyup="onUpdateText"
-            @paste="onUpdateText">{{page.config.text}}</textarea>
-        </div>
-        <div class='col-xs-6'>
-          <asset-view
-            :asset_spec="page.media"
-            :shadow=true
-            width=320
-            height=310>
-          </asset-view>
-        </div>
-      </div>
-    </script>
-
-    <script type="text/x-template" id="page-center-overlay">
-      <div class='row'>
-        <div class='col-xs-12'>
-          <h3>Text Centered Layout</h3>
-        </div>
+        // <div class='col-xs-12'>
+        //   <h3>Text Centered Layout</h3>
+        // </div>
         <div class='col-xs-6'>
           <asset-view
             :asset_spec="page.media"
@@ -549,6 +377,13 @@
                 @assetSelected='onAssetSelected'>
               </asset-browser>
             </div>
+            <div class='col-xs-6'>
+              <label class='field-label'>Overlay Alignment</label>
+              <layout-select :layout="page.layout" @layoutSelected='onLayoutSelected'>
+              </layout-select>
+            </div>
+          </div>
+          <div class='row'>
             <div class='col-xs-6'>
               <div class="checkbox">
                 <label>
@@ -740,20 +575,7 @@
         footer: "package.png",
         timezone: "Europe/Berlin",
         pages: [{
-          layout: 'text-right',
-          schedule: {
-            hours: [],
-          },
-          interaction: {
-            key: "e",
-            title: "",
-            duration: "auto",
-          },
-          config: {},
-          media: "package.png",
-          duration: "10",
-        }, {
-          layout: 'center-overlay',
+          layout: 'overlay',
           schedule: {
             hours: [],
           },

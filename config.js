@@ -21,7 +21,7 @@ const store = new Vuex.Store({
     create_page (state, index) {
       var new_page = {
         media: "empty.png",
-        layout: "center-overlay",
+        layout: "overlay",
         config: {},
         schedule: {
           hours: [],
@@ -213,8 +213,8 @@ Vue.component('page-fullscreen', {
   }
 })
 
-Vue.component('page-center-overlay', {
-  template: '#page-center-overlay',
+Vue.component('page-overlay', {
+  template: '#page-overlay',
   props: ["page"],
   methods: {
     onAssetSelected(asset_spec) {
@@ -234,57 +234,6 @@ Vue.component('page-center-overlay', {
     },
     onUpdateShowOverlay(evt) {
       this.$emit('configUpdated', 'show_overlay', evt.target.checked);
-    },
-    onUpdateText(evt) {
-      this.$emit('configUpdated', 'text', evt.target.value);
-    },
-  }
-})
-
-
-Vue.component('page-text-right', {
-  template: '#page-text-right',
-  props: ["page"],
-  methods: {
-    onAssetSelected(asset_spec) {
-      this.$emit('mediaUpdated', asset_spec);
-    },
-    onUpdateForeground(evt) {
-      this.$emit('configUpdated', 'foreground', evt.target.value);
-    },
-    onUpdateBackground(evt) {
-      this.$emit('configUpdated', 'background', evt.target.value);
-    },
-    onUpdateTitle(evt) {
-      this.$emit('configUpdated', 'title', evt.target.value);
-    },
-    onUpdateKenBurns(evt) {
-      this.$emit('configUpdated', 'kenburns', evt.target.checked);
-    },
-    onUpdateText(evt) {
-      this.$emit('configUpdated', 'text', evt.target.value);
-    },
-  }
-})
-
-Vue.component('page-text-left', {
-  template: '#page-text-left',
-  props: ["page"],
-  methods: {
-    onAssetSelected(asset_spec) {
-      this.$emit('mediaUpdated', asset_spec);
-    },
-    onUpdateForeground(evt) {
-      this.$emit('configUpdated', 'foreground', evt.target.value);
-    },
-    onUpdateBackground(evt) {
-      this.$emit('configUpdated', 'background', evt.target.value);
-    },
-    onUpdateTitle(evt) {
-      this.$emit('configUpdated', 'title', evt.target.value);
-    },
-    onUpdateKenBurns(evt) {
-      this.$emit('configUpdated', 'kenburns', evt.target.checked);
     },
     onUpdateText(evt) {
       this.$emit('configUpdated', 'text', evt.target.value);
