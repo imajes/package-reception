@@ -18,6 +18,7 @@ local overlay_debug = false
 local font_regl = resource.load_font "default-font.ttf"
 local font_bold = resource.load_font "default-font-bold.ttf"
 local font_italic = resource.load_font "default-font-italic.ttf"
+local font_calligraphy = resource.load_font "calligraphy-font.ttf"
 
 local active_intermission_page_idx
 
@@ -673,6 +674,11 @@ local function Markup(config)
                     font = font_bold
                     size = H1_FONT_SIZE
                     maxl = max_per_line(font, size, width)
+                elseif line:sub(1,1) == "~" then
+                    line = line:sub(2)
+                    font = font_calligraphy
+                    size = H1_FONT_SIZE
+                    maxl = max_per_line(font, size, width)
                 elseif line:sub(1,2) == "__" then
                     line = line:sub(3)
                     font = font_italic
@@ -1045,12 +1051,8 @@ local function Playlist()
         add{
             offset = offset,
             duration = duration,
-            fn = Flat{
-                fade_time = 0,
-                color = '#FF0000',
-                opacity = 0.2,
-            },
-            coord = tile_top,
+            fn = image_or_video_player(page.media),
+            coord = tile_fullbleed,
         }
         add{
             offset = offset,

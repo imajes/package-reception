@@ -232,6 +232,9 @@ Vue.component('page-center-overlay', {
     onUpdateKenBurns(evt) {
       this.$emit('configUpdated', 'kenburns', evt.target.checked);
     },
+    onUpdateShowOverlay(evt) {
+      this.$emit('configUpdated', 'show_overlay', evt.target.checked);
+    },
     onUpdateText(evt) {
       this.$emit('configUpdated', 'text', evt.target.value);
     },
