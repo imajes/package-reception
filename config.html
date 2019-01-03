@@ -381,7 +381,7 @@
             </div>
             <div class='col-xs-6'>
               <label class='field-label'>Overlay Alignment</label>
-              <overlay-pos-select :position="page.overlay_position" @overlayPositionSelected='onUpdateOverlayPosition'>
+              <overlay-pos-select :position="page.config.overlay_position" @overlayPositionSelected='onUpdateOverlayPosition'>
               </overlay-pos-select>
             </div>
           </div>
@@ -402,7 +402,7 @@
           <br/>
           <div class='row'>
             <div class='col-xs-6'>
-              <label class='field-label'>Foreground</label>
+              <label class='field-label'>Text Color</label>
               <input
                 class="form-control"
                 type="color"
@@ -410,7 +410,7 @@
                 @change="onUpdateForeground">
             </div>
             <div class='col-xs-6'>
-              <label class='field-label'>Background</label>
+              <label class='field-label'>Overlay Color</label>
               <input
                 class="form-control"
                 type="color"
