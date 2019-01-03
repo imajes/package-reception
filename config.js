@@ -236,7 +236,7 @@ Vue.component('page-overlay', {
       this.$emit('configUpdated', 'show_overlay', evt.target.checked);
     },
     onUpdateOverlayPosition(evt) {
-      this.$emit('configUpdated', 'overlay_position', evt.target.checked);
+      this.$emit('configUpdated', 'overlay_position', evt);
     },
     onUpdateText(evt) {
       this.$emit('configUpdated', 'text', evt.target.value);
