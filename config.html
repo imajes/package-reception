@@ -183,7 +183,7 @@
             <button
               class='btn btn-default btn-primary'
               @click="onAdd(-1)">
-              Add
+              Add 
               <span class='glyphicon glyphicon-plus'></span>
             </button>
             <br/>
@@ -196,8 +196,8 @@
                 :page="page"
                 :index="index">
               </page-ui>
-              <button class='btn btn-default' @click="onAdd(index)">
-                Add
+              <button class='btn btn-default btn-primary' @click="onAdd(index)">
+                Add 
                 <span class='glyphicon glyphicon-plus'></span>
               </button>
               <br/>
@@ -211,8 +211,10 @@
     <script type="text/x-template" id="page-ui">
       <div class="panel panel-default">
         <div class="panel-heading">
+          <label class='field-label'>Layout</label>
           <layout-select :layout="page.layout" @layoutSelected='onLayoutSelected'>
           </layout-select>
+          <label class='field-label'>Duration</label>
           <select
             class='btn btn-default'
             @change="onDurationChange">
@@ -355,9 +357,6 @@
 
     <script type="text/x-template" id="page-overlay">
       <div class='row'>
-        // <div class='col-xs-12'>
-        //   <h3>Text Centered Layout</h3>
-        // </div>
         <div class='col-xs-6'>
           <asset-view
             :asset_spec="page.media"
@@ -385,6 +384,7 @@
           </div>
           <div class='row'>
             <div class='col-xs-6'>
+              <br/>
               <div class="checkbox">
                 <label>
                   <input
