@@ -1009,7 +1009,7 @@ local function Playlist()
             fn = image_or_video_player(page.media),
             coord = tile_fullbleed,
         }
-        if page.config.show_overlay then
+        if page.config.show_overlay == true then
             add{
                 offset = offset,
                 duration = duration,
