@@ -581,8 +581,8 @@ local function Markup(config)
         -- try to calculate the max characters/line
         -- number based on the average character width
         -- of the specified font.
-        local test_width = font:width("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz", size)
-        local avg_width = test_width / 52
+        local test_width = font:width("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz .,:;\"'", size)
+        local avg_width = test_width / 59 -- number of chars in test
         local chars_per_line = width / avg_width
         return math.floor(chars_per_line)
     end
@@ -626,6 +626,7 @@ local function Markup(config)
 
     local function layout_paragraph(paragraph)
         for line in string.gmatch(paragraph, "[^\n]+") do
+            print("MARKUP: Working on line", line)
             local font = font_regl
             local size = DEFAULT_FONT_SIZE -- font size for line
             local maxl = max_per_line(font, size, width)
@@ -659,28 +660,39 @@ local function Markup(config)
                 -- plain text, wrapped
                 flush_table()
 
-                -- markdown header # and ##
-                if line:sub(1,3) == "###" then
+
+                if line == "---" then
+                    -- whitespace
+                    line = "               "
+                    font = font_regl
+                    size = H1_FONT_SIZE
+                    maxl = max_per_line(font, size, width)
+                elseif line:sub(1,3) == "###" then
+                    -- notes
                     line = line:sub(4)
                     font = font_regl
                     size = NOTE_FONT_SIZE
                     maxl = max_per_line(font, size, width)
                 elseif line:sub(1,2) == "##" then
+                    -- subhead
                     line = line:sub(3)
                     font = font_bold
                     size = H2_FONT_SIZE
                     maxl = max_per_line(font, size, width)
                 elseif line:sub(1,1) == "#" then
+                    -- header
                     line = line:sub(2)
                     font = font_bold
                     size = H1_FONT_SIZE
                     maxl = max_per_line(font, size, width)
                 elseif line:sub(1,1) == "~" then
+                    -- calligraphy
                     line = line:sub(2)
                     font = font_calligraphy
                     size = CALLIGRAPHY_FONT_SIZE
                     maxl = max_per_line(font, size, width) * 1.2
                 elseif line:sub(1,2) == "__" then
+                    -- italics
                     line = line:sub(3)
                     font = font_italic
                     size = NOTE_FONT_SIZE
