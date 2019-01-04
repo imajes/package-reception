@@ -14,7 +14,7 @@ local IDLE_ASSET = "empty.png"
 
 local node_config = {}
 
-local overlay_debug = false
+local debug_overlay = false
 local font_regl = resource.load_font "default-font.ttf"
 local font_bold = resource.load_font "default-font-bold.ttf"
 local font_italic = resource.load_font "default-font-italic.ttf"
@@ -573,6 +573,7 @@ local function Markup(config)
 
     local DEFAULT_FONT_SIZE = 35
     local NOTE_FONT_SIZE = 28
+    local CALLIGRAPHY_FONT_SIZE = 90
     local H1_FONT_SIZE = 70
     local H2_FONT_SIZE = 50
 
@@ -677,8 +678,8 @@ local function Markup(config)
                 elseif line:sub(1,1) == "~" then
                     line = line:sub(2)
                     font = font_calligraphy
-                    size = H1_FONT_SIZE
-                    maxl = max_per_line(font, size, width)
+                    size = CALLIGRAPHY_FONT_SIZE
+                    maxl = max_per_line(font, size, width) * 1.2
                 elseif line:sub(1,2) == "__" then
                     line = line:sub(3)
                     font = font_italic
@@ -763,7 +764,7 @@ local function JobQueue()
             local job = jobs[idx]
             local x1, y1, x2, y2 = job.coord(job.starts, job.ends, now)
 
-            if overlay_debug then
+            if debug_overlay then
                 overlays[(idx-1)%#overlays+1]:draw(x1, y1, x2, y2, 0.1)
             end
 
@@ -890,15 +891,11 @@ local function Playlist()
         return 0, 0, WIDTH, HEIGHT
     end
 
-    local function tile_fullscreen(s, e, now)
-        return 0, 0, WIDTH, HEIGHT-50
-    end
-
     local function tile_logo(s, e, now)
         return WIDTH-350, 50, WIDTH-100, 178
     end
 
-    local function tile_center_overlay(s, e, now)
+    local function tile_overlay_center(s, e, now)
         -- centered..
         -- return WIDTH/8, HEIGHT/4, (WIDTH/8)*7, (HEIGHT/6)*5
 
@@ -906,8 +903,19 @@ local function Playlist()
         return WIDTH/8, HEIGHT/4, (WIDTH/8)*7, HEIGHT
     end
 
-    local function tile_center_inner(s, e, now)
-        return (WIDTH/8)+10, (HEIGHT/4)+10, ((WIDTH/8)*7)+10, ((HEIGHT/6)*5)+10
+    local function tile_overlay_left(s, e, now)
+        -- this is designed to approximate from 0 left with a width of about 45%
+        return 0, HEIGHT/4, (WIDTH/20)*12, HEIGHT
+    end
+
+    local function tile_overlay_right(s, e, now)
+        -- this is designed to approximate about 45% from left
+        return (WIDTH/20)*9, HEIGHT/4, WIDTH, HEIGHT
+    end
+
+    local function tile_overlay_inner(a,b,c,d)
+        -- return (WIDTH/8)+10, (HEIGHT/4)+10, ((WIDTH/8)*7)+10, ((HEIGHT/6)*5)+10
+        return static(a+10, b+10, c-10, d-10)
     end
 
     local function tile_top(s, e, now)
@@ -916,10 +924,6 @@ local function Playlist()
 
     local function tile_bottom(s, e, now)
         return 0, HEIGHT-50, WIDTH, HEIGHT
-    end
-
-    local function tile_bottom_scroller(s, e, now)
-        return 300, HEIGHT-50, WIDTH, HEIGHT
     end
 
     local function tile_bottom_clock(s, e, now)
@@ -1001,8 +1005,30 @@ local function Playlist()
         offset = offset + duration
     end
 
+    local function coord_for_overlay_pos(pos)
+        print("overlay pos is " .. pos)
+        if pos == 'left' then
+            return tile_overlay_left
+        elseif pos == 'center' then
+            return tile_overlay_center
+        elseif pos == 'right' then
+            return tile_overlay_right
+        else
+            return tile_overlay_center
+        end
+
+    end
+
+
     local function page_overlay(page, duration)
         duration = duration or get_duration(page)
+        local now = clock.unix()
+
+        -- coords
+        local coord_fn = coord_for_overlay_pos(page.config.overlay_position)
+        local x1,y1,x2,y2 = coord_fn(offset, duration, now)
+        print(("OVERLAY COORDS: x1: %s, y1: %s, x2: %s, y2: %s"):format(x1, y1, x2, y2))
+
         add{
             offset = offset,
             duration = duration,
@@ -1018,7 +1044,7 @@ local function Playlist()
                     color = page.config.background or '#000000',
                     opacity = 0.75,
                 },
-                coord = tile_center_overlay,
+                coord = coord_for_overlay_pos(page.config.overlay_position),
             }
         end
         add{
@@ -1031,16 +1057,17 @@ local function Playlist()
             },
             coord = tile_logo,
         }
+        print(("About to add markup box of w: %s, h: %s"):format((x2-x1-20), (y2-y1-20)))
         add{
             offset = offset,
             duration = duration,
             fn = Markup{
                 text = page.config.text or "",
-                width = ((WIDTH/8)*6)-20,
-                height = ((HEIGHT/6)*4)-20,
+                width = (x2-x1)-20,
+                height = (y2-y1)-20,
                 color = page.config.foreground or "#ffffff",
             },
-            coord = tile_center_inner,
+            coord = tile_overlay_inner(x1,y1,x2,y2),
         }
         -- add_info_bar(page, duration)
         offset = offset + duration
