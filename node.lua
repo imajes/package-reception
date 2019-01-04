@@ -1046,6 +1046,85 @@ local function Playlist()
         offset = offset + duration
     end
 
+    local function page_text_left(page, duration)
+        duration = duration or get_duration(page)
+        add{
+            offset = offset,
+            duration = duration,
+            fn = image_or_video_player(page.media),
+            coord = tile_fullbleed,
+        }
+        add{
+            offset = offset,
+            duration = duration,
+            fn = image_or_video_player(page.media, page.config.kenburns),
+            coord = tile_right,
+        }
+        add{
+            offset = offset,
+            duration = duration,
+            fn = Flat{
+                fade_time = 0,
+                color = page.config.background or "#000000",
+            },
+            coord = tile_left,
+        }
+        add{
+            offset = offset,
+            duration = duration,
+            fn = Markup{
+                text = page.config.text or "",
+                width = WIDTH/2,
+                height = HEIGHT-200,
+                color = page.config.foreground or "#ffffff",
+            },
+            coord = tile_left,
+        }
+        add_info_bar(page, duration)
+        offset = offset + duration
+    end
+
+    local function page_text_right(page, duration)
+        duration = duration or get_duration(page)
+        add{
+            offset = offset,
+            duration = duration,
+            fn = Image{
+                fade_time = 0,
+                asset_name = node_config.header.asset_name,
+            },
+            coord = tile_top,
+        }
+        add{
+            offset = offset,
+            duration = duration,
+            fn = image_or_video_player(page.media, page.config.kenburns),
+            coord = tile_left,
+        }
+        add{
+            offset = offset,
+            duration = duration,
+            fn = Flat{
+                fade_time = 0,
+                color = page.config.background or "#000000",
+            },
+            coord = tile_right,
+        }
+        add{
+            offset = offset,
+            duration = duration,
+            fn = Markup{
+                text = page.config.text or "",
+                width = WIDTH/2,
+                height = HEIGHT-200,
+                color = page.config.foreground or "#ffffff",
+            },
+            coord = tile_right,
+        }
+        add_info_bar(page, duration)
+        offset = offset + duration
+    end
+
     local layouts = {
         ["fullscreen"] = page_fullscreen;
         ["overlay"] = page_overlay;
